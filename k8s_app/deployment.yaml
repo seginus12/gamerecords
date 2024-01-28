@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: django
+  name: django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: django
+  template:
+    metadata:
+      labels:
+        name: django
+    spec:
+      containers:
+      - name: django
+        image: gamerecords
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+          - containerPort: 8000
+            protocol: TCP
+        envFrom:
+          - secretRef:
+              name: django-secrets
+          - configMapRef:
+              name: django-config
+        env:
+          - name: POSTGRES_HOST
+            value: postgres-svc
